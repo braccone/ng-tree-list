@@ -1,0 +1,18 @@
+<form class="tree" [formGroup]="testForm">
+  <ng-template #recursiveList let-controls let-prefix="prefix">
+    <ul *ngFor="let item of controls; let i = index">
+      <li class="tree-item" [formGroup]="testForm.get(prefix + i)">
+        <input type="checkbox" formControlName="label" (change)="OnChange($event)" [id]="prefix + i"> {{item.value.text}}
+      </li>
+      <div class="sub-tree" *ngIf="item.get('children')?.controls?.length">
+        <ng-container
+          *ngTemplateOutlet="recursiveList; context:{ $implicit: item.get('children').controls, prefix: prefix + i + '.children.'  }">
+        </ng-container>
+      </div>
+    </ul>
+  </ng-template>
+<ng-container
+*ngTemplateOutlet="recursiveList; context:{ $implicit: testForm.get('children').controls, prefix: 'children.' }"></ng-container>
+</form>
+
+<pre>{{testForm.value | json}}</pre>
